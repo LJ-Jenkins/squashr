@@ -1,0 +1,15 @@
+Package: squashr
+Title: Squash Lists Encoding Structure in Names
+Version: 1.0.0
+Authors@R: 
+   person("Luke", "Jenkins", , "luke-jenkins-dev@outlook.com", role = c("aut", "cre", "cph"), comment = c(ORCID = "0000-0002-7206-7242"))
+Description: Squash lists to 1-dimension, optionally encoding the original nested structure in the names of the squashed lists.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 8.0.0
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+URL: https://lj-jenkins.github.io/squashr/, https://github.com/LJ-Jenkins/squashr
+BugReports: https://github.com/LJ-Jenkins/squashr/issues

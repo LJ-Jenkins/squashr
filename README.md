@@ -1,0 +1,367 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# squashr <img src="man/figures/logo.png" align="right" height="140" alt="" />
+
+<!-- badges: start -->
+
+<!-- badges: end -->
+
+Squash lists to 1-dimension, optionally whilst encoding the original
+nested structure in the names of the squashed lists.
+
+## Installation
+
+You can install the development version of squashr from GitHub:
+
+``` r
+# install.packages("pak")
+pak::pak("LJ-Jenkins/squashr")
+```
+
+## Usage
+
+### Squash lists to 1-dimension (without simplifying)
+
+``` r
+library(squashr)
+
+# default drops empty elements
+x <- list(a = list(b = 1, c = 2), NULL, d = 3, p = numeric())
+squash(x)
+#> $b
+#> [1] 1
+#> 
+#> $c
+#> [1] 2
+#> 
+#> $d
+#> [1] 3
+
+# keep empty elements
+squash(x, keep.empty = TRUE)
+#> $b
+#> [1] 1
+#> 
+#> $c
+#> [1] 2
+#> 
+#> [[3]]
+#> NULL
+#> 
+#> $d
+#> [1] 3
+#> 
+#> $p
+#> numeric(0)
+
+# squash0 drops names and empty elements
+squash0(x)
+#> [[1]]
+#> [1] 1
+#> 
+#> [[2]]
+#> [1] 2
+#> 
+#> [[3]]
+#> [1] 3
+
+# no simplification occurs, not the result or any elements of the input list
+x <- list(1:2, list(1:2))
+squash(x)
+#> [[1]]
+#> [1] 1 2
+#> 
+#> [[2]]
+#> [1] 1 2
+squash0(x)
+#> [[1]]
+#> [1] 1 2
+#> 
+#> [[2]]
+#> [1] 1 2
+
+# data.frames are not squashed
+x <- list(a = data.frame(x = 1, y = 2), b = 1)
+squash(x)
+#> $a
+#>   x y
+#> 1 1 2
+#> 
+#> $b
+#> [1] 1
+squash0(x)
+#> [[1]]
+#>   x y
+#> 1 1 2
+#> 
+#> [[2]]
+#> [1] 1
+
+# inner names are preserved
+x <- list(a = 1, b = list(list(a = 1)))
+squash(x)
+#> $a
+#> [1] 1
+#> 
+#> $a
+#> [1] 1
+squash0(x)
+#> [[1]]
+#> [1] 1
+#> 
+#> [[2]]
+#> [1] 1
+
+# result nor any elements of the input list are simplified
+unlist(list(1, 2, 3))
+#> [1] 1 2 3
+squash0(list(1, 2, 3))
+#> [[1]]
+#> [1] 1
+#> 
+#> [[2]]
+#> [1] 2
+#> 
+#> [[3]]
+#> [1] 3
+unlist(list(1:3, list("a", "b")), recursive = FALSE)
+#> [[1]]
+#> [1] 1
+#> 
+#> [[2]]
+#> [1] 2
+#> 
+#> [[3]]
+#> [1] 3
+#> 
+#> [[4]]
+#> [1] "a"
+#> 
+#> [[5]]
+#> [1] "b"
+squash0(list(1:3, list("a", "b")))
+#> [[1]]
+#> [1] 1 2 3
+#> 
+#> [[2]]
+#> [1] "a"
+#> 
+#> [[3]]
+#> [1] "b"
+```
+
+### Squash lists whilst encoding original structure
+
+``` r
+x <- list(a = list(b = 1, c = 2), d = 3)
+
+# named elements are joined with `sep` (".." by default)
+squash_track(x)
+#> Squashed list (3 elements)
+#> -Element separator: '..'
+#> -Wrap character for whole number names: '''
+#> -Unique names: FALSE
+#> 
+#> $a..b
+#> [1] 1
+#> 
+#> $a..c
+#> [1] 2
+#> 
+#> $d
+#> [1] 3
+
+# unnamed elements use their index
+squash_track(list(list(1, 2), 3))
+#> Squashed list (3 elements)
+#> -Element separator: '..'
+#> -Wrap character for whole number names: '''
+#> -Unique names: FALSE
+#> 
+#> $`1..1`
+#> [1] 1
+#> 
+#> $`1..2`
+#> [1] 2
+#> 
+#> $`2`
+#> [1] 3
+
+# empty elements are not dropped, unlike default of squash()
+squash_track(list(a = 1, NULL, b = 2))
+#> Squashed list (3 elements)
+#> -Element separator: '..'
+#> -Wrap character for whole number names: '''
+#> -Unique names: FALSE
+#> 
+#> $a
+#> [1] 1
+#> 
+#> $`2`
+#> NULL
+#> 
+#> $b
+#> [1] 2
+
+# whole-number names are wrapped with `wrap` ("'" by default) to
+# distinguish them from bare indices
+squash_track(list("1" = list(a = 5, "2" = 10)))
+#> Squashed list (2 elements)
+#> -Element separator: '..'
+#> -Wrap character for whole number names: '''
+#> -Unique names: FALSE
+#> 
+#> $`'1'..a`
+#> [1] 5
+#> 
+#> $`'1'..'2'`
+#> [1] 10
+
+# sep and wrap are fully customisable
+squash_track(c(x, "1" = 1), sep = "/", wrap = "<")
+#> Squashed list (4 elements)
+#> -Element separator: '/'
+#> -Wrap character for whole number names: '<'
+#> -Unique names: FALSE
+#> 
+#> $`a/b`
+#> [1] 1
+#> 
+#> $`a/c`
+#> [1] 2
+#> 
+#> $d
+#> [1] 3
+#> 
+#> $`<1<`
+#> [1] 1
+
+# duplicate names are left as-is by default; pass a string to
+# unique_names to disambiguate them by appending the index
+squash_track(list(x = 1, x = 2, x = 3))
+#> Squashed list (3 elements)
+#> -Element separator: '..'
+#> -Wrap character for whole number names: '''
+#> -Unique names: FALSE
+#> 
+#> $x
+#> [1] 1
+#> 
+#> $x
+#> [1] 2
+#> 
+#> $x
+#> [1] 3
+squash_track(list(x = 1, x = 2, x = 3), unique_names = "*")
+#> Squashed list (3 elements)
+#> -Element separator: '..'
+#> -Wrap character for whole number names: '''
+#> -Unique names: TRUE, distinguished using: '*'
+#> 
+#> $x
+#> [1] 1
+#> 
+#> $`x*2`
+#> [1] 2
+#> 
+#> $`x*3`
+#> [1] 3
+```
+
+`squash_track0()` uses R’s own `[[...]]` accessor syntax for names and
+errors on any duplicate names at the same level.
+
+``` r
+squash_track0(x)
+#> $`[["a"]][["b"]]`
+#> [1] 1
+#> 
+#> $`[["a"]][["c"]]`
+#> [1] 2
+#> 
+#> $`[["d"]]`
+#> [1] 3
+
+# duplicate names are an error with squash_track0
+squash_track0(list(x = 1, x = 2))
+#> Error in `squash_track0.list()`:
+#> ! Duplicate path component `x`. Use `squash()` with `unique_names` to automatically disambiguate duplicates.
+```
+
+`is.squashed()` recognises objects from both squash_track functions.
+
+``` r
+is.squashed(squash_track(x))
+#> [1] TRUE
+is.squashed(squash_track0(x))
+#> [1] TRUE
+is.squashed(list(a = 1))
+#> [1] FALSE
+```
+
+### Use a squashed name to index the original list
+
+``` r
+x <- list(a = list(b = 1, "1" = 99), list(5, 6))
+sq <- squash_track(x)
+names(sq)
+#> [1] "a..b"   "a..'1'" "2..1"   "2..2"
+
+# each name decodes back to the exact call needed to index `x`
+squashed_nm2call("a..b") # named -> string subscript
+#> .data[["a"]][["b"]]
+squashed_nm2call("a..'1'") # wrapped -> string subscript
+#> .data[["a"]][["1"]]
+squashed_nm2call("2..1") # numeric -> integer subscript
+#> .data[[2L]][[1L]]
+
+# change the root variable and evaluate to retrieve the value
+cll <- squashed_nm2call(names(sq)[2], var = "x")
+cll
+#> x[["a"]][["1"]]
+eval(cll)
+#> [1] 99
+```
+
+With `squash_track0()` the names are already valid R syntax, so
+conversion is straightforward.
+
+``` r
+sq0 <- squash_track0(x)
+names(sq0)
+#> [1] "[[\"a\"]][[\"b\"]]" "[[\"a\"]][[\"1\"]]" "[[2]][[1]]"        
+#> [4] "[[2]][[2]]"
+
+cll0 <- squashed0_nm2call(names(sq0)[2], var = "x")
+cll0
+#> x[["a"]][["1"]]
+eval(cll0)
+#> [1] 99
+```
+
+The round-trip works for any depth:
+
+``` r
+x <- list(a = list(b = list(c = 42)))
+sq <- squash_track(x)
+names(sq)
+#> [1] "a..b..c"
+
+cll <- squashed_nm2call(names(sq), var = "x")
+eval(cll)
+#> [1] 42
+```
+
+## Getting help
+
+If you encounter a clear bug, please file an issue with a minimal
+reproducible example on
+[GitHub](https://github.com/LJ-Jenkins/squashr/issues).
+
+## Code of Conduct
+
+Please note that the squashr project is released with a [Contributor
+Code of
+Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html).
+By contributing to this project, you agree to abide by its terms.
