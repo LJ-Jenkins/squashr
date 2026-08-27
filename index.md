@@ -61,7 +61,8 @@ squash0(x)
 #> [[3]]
 #> [1] 3
 
-# no simplification occurs, not the result or any elements of the input list
+# no simplification occurs:
+# not the result nor any elements of the input list
 x <- list(1:2, list(1:2))
 squash(x)
 #> [[1]]
@@ -107,43 +108,6 @@ squash0(x)
 #> 
 #> [[2]]
 #> [1] 1
-
-# result nor any elements of the input list are simplified
-unlist(list(1, 2, 3))
-#> [1] 1 2 3
-squash0(list(1, 2, 3))
-#> [[1]]
-#> [1] 1
-#> 
-#> [[2]]
-#> [1] 2
-#> 
-#> [[3]]
-#> [1] 3
-unlist(list(1:3, list("a", "b")), recursive = FALSE)
-#> [[1]]
-#> [1] 1
-#> 
-#> [[2]]
-#> [1] 2
-#> 
-#> [[3]]
-#> [1] 3
-#> 
-#> [[4]]
-#> [1] "a"
-#> 
-#> [[5]]
-#> [1] "b"
-squash0(list(1:3, list("a", "b")))
-#> [[1]]
-#> [1] 1 2 3
-#> 
-#> [[2]]
-#> [1] "a"
-#> 
-#> [[3]]
-#> [1] "b"
 ```
 
 ### Squash lists whilst encoding original structure

@@ -53,8 +53,8 @@ direct conversion back to calls using
 `sep`, `wrap`, and `unique_names` arguments to correctly interpret the
 structure of the squashed names in relation to the original object. For
 example, `"1..'1'"` with `sep=".."` and `wrap="'"` would be interpreted
-as `.data[[1]][["1"]]` whereas `"`a..b..'1'..a\*5`"` would be
-interpreted as `.data[["a"]][["b"]][["1"]][[5L]]`.
+as `.data[[1]][["1"]]` whereas `"a..b..'1'..a*5"` would be interpreted
+as `.data[["a"]][["b"]][["1"]][[5L]]`.
 
 ## Note
 
