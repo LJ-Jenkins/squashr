@@ -24,13 +24,17 @@
 #' @param unique_names The marker used for uniquely marked names.
 #' @return A call representing the original nested structure
 #' of the squashed name.
+#' @note
+#' Caution must be exercised when using these functions, as
+#' unexpected inputs (e.g., malformed squashed names or unsquashed
+#' names) may lead to errors or unexpected behaviour.
 #' @examples
 #' squashed_nm2call("1..'1'")
 #' squashed_nm2call("a..b..'1'..a*5", unique_names = "*")
 #'
 #' x <- list(list("1" = 1))
-#' y <- squash0(x)
-#' cll <- squashed0_nm2call(names(y), var = "x")
+#' y <- squash_track(x)
+#' cll <- squashed_nm2call(names(y), var = "x")
 #' eval(cll)
 #' @export
 squashed_nm2call <- function(
