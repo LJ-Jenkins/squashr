@@ -46,7 +46,7 @@ using the \code{sep}, \code{wrap}, and \code{unique_names} arguments to
 correctly interpret the structure of the squashed names in
 relation to the original object. For example, \code{"1..'1'"}
 with \code{sep=".."} and \code{wrap="'"} would be interpreted as
-\code{.data[[1]][["1"]]} whereas \verb{"}a..b..'1'..a*5\verb{"} would
+\code{.data[[1]][["1"]]} whereas \code{"a..b..'1'..a*5"} would
 be interpreted as \code{.data[["a"]][["b"]][["1"]][[5L]]}.
 }
 \note{

@@ -48,7 +48,8 @@ squash(x, keep.empty = TRUE)
 # squash0 drops names and empty elements
 squash0(x)
 
-# no simplification occurs, not the result or any elements of the input list
+# no simplification occurs:
+# not the result nor any elements of the input list
 x <- list(1:2, list(1:2))
 squash(x)
 squash0(x)
@@ -62,12 +63,6 @@ squash0(x)
 x <- list(a = 1, b = list(list(a = 1)))
 squash(x)
 squash0(x)
-
-# result nor any elements of the input list are simplified
-unlist(list(1, 2, 3))
-squash0(list(1, 2, 3))
-unlist(list(1:3, list("a", "b")), recursive = FALSE)
-squash0(list(1:3, list("a", "b")))
 ```
 
 ### Squash lists whilst encoding original structure

@@ -14,7 +14,7 @@
 #' correctly interpret the structure of the squashed names in
 #' relation to the original object. For example, `"1..'1'"`
 #' with `sep=".."` and `wrap="'"` would be interpreted as
-#' `.data[[1]][["1"]]` whereas `"`a..b..'1'..a*5`"` would
+#' `.data[[1]][["1"]]` whereas `"a..b..'1'..a*5"` would
 #' be interpreted as `.data[["a"]][["b"]][["1"]][[5L]]`.
 #' @param nm A squashed name to be converted back to a call.
 #' @param var A string referring to the object that will be the subject
