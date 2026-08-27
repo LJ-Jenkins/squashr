@@ -56,6 +56,12 @@ example, `"1..'1'"` with `sep=".."` and `wrap="'"` would be interpreted
 as `.data[[1]][["1"]]` whereas `"`a..b..'1'..a\*5`"` would be
 interpreted as `.data[["a"]][["b"]][["1"]][[5L]]`.
 
+## Note
+
+Caution must be exercised when using these functions, as unexpected
+inputs (e.g., malformed squashed names or unsquashed names) may lead to
+errors or unexpected behaviour.
+
 ## Examples
 
 ``` r
@@ -65,9 +71,8 @@ squashed_nm2call("a..b..'1'..a*5", unique_names = "*")
 #> .data[["a"]][["b"]][["1"]][[5L]]
 
 x <- list(list("1" = 1))
-y <- squash0(x)
-cll <- squashed0_nm2call(names(y), var = "x")
-#> Error in squashed0_nm2call(names(y), var = "x"): `nm` must be a single string
+y <- squash_track(x)
+cll <- squashed_nm2call(names(y), var = "x")
 eval(cll)
-#> Error: object 'cll' not found
+#> [1] 1
 ```
